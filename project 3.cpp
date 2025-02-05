@@ -1,155 +1,89 @@
-#include<bits/stdc++.h>
-#include<ctime>
-using namespace std;
-void Board(char* spaces);
+#include <stdio.h>
 
-void Player(char* Spaces ,char player);
+char board[3][3]; // 3x3 Tic-Tac-Toe board
+char Player = 'X'; 
 
-void Computer(char* Spaces,char computer);
-
-bool Win(char* Spaces,char player,char Computer);
-
-bool Tie(char* Spaces);
-
-
-int main()
-{
-char Spaces[9] = {' ',' ',' ',' ',' ',' ',' ',' ',' '};
-
-char player='X';
-
-char computer='O';
-
-bool Running=true;
-
-Board(Spaces);
-
-while (Running)
-{
-    Player(Spaces,player);
-
-    Board(Spaces);
-
-    if(Win(Spaces, player, computer))
-    {
-        Running = false;
-        break;
+void initialBoard() {
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 3; j++) {
+            board[i][j] = ' ';
+        }
     }
-    else if(Tie(Spaces))
-    {
-        Running = false;
-        break;
+}
+
+void printBoard() {
+    printf("\n");
+    for (int i = 0; i < 3; i++) {
+        printf(" %c | %c | %c ", board[i][0], board[i][1], board[i][2]);
+        if (i < 2) printf("\n---|---|---\n");
     }
+    printf("\n\n");
+}
 
-    Computer(Spaces,computer);  
-
-    Board(Spaces);
+int Win() {
+    for (int i = 0; i < 3; i++) {
+        
+        if ((board[i][0] == board[i][1] && board[i][1] == board[i][2] && board[i][0] != ' ') ||
+            (board[0][i] == board[1][i] && board[1][i] == board[2][i] && board[0][i] != ' ')) {
+            return 1; 
+        }
+    }
     
-    if(Win(Spaces, player, computer))
-    {
-        Running = false;
-        break;
+    if ((board[0][0] == board[1][1] && board[1][1] == board[2][2] && board[0][0] != ' ') ||
+        (board[0][2] == board[1][1] && board[1][1] == board[2][0] && board[0][2] != ' ')) {
+        return 1; 
     }
-    else if(Tie(Spaces))
-    {
-        Running = false;
-        break;
+    return 0; 
+}
+
+int BoardFull() {
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 3; j++) {
+            if (board[i][j] == ' ') return 0; 
+        }
+    }
+    return 1;
+}
+
+void switchPlayer() {
+    Player = (Player == 'X') ? 'O' : 'X';
+}
+
+void Move() {
+    int row, col;
+    while (1) {
+        printf("Player %c, enter row (1-3) and column (1-3): ",Player);
+        scanf("%d %d", &row, &col);
+
+        row--; col--;
+        if (row >= 0 && row < 3 && col >= 0 && col < 3 && board[row][col] == ' ') {
+            board[row][col] = Player;
+            break;
+        } else {
+            printf("Invalid move! Try again.\n");
+        }
     }
 }
-return 0;
-}
-void Board(char* Spaces)
-{
-cout<<"     |     |     "<<endl;
-cout<<"  "<<Spaces[0]<<"  |  "<<Spaces[1]<<"  |  "<<Spaces[2]<<"  "<<endl;
-cout<<"     |     |     "<<endl;
-cout<<"-----------------"<<endl;
-cout<<"     |     |     "<<endl;
-cout<<"  "<<Spaces[3]<<"  |  "<<Spaces[4]<<"  |  "<<Spaces[5]<<"  "<<endl;
-cout<<"     |     |     "<<endl;
-cout<<"-----------------"<<endl;
-cout<<"     |     |     "<<endl;
-cout<<"  "<<Spaces[6]<<"  |  "<<Spaces[7]<<"  |  "<<Spaces[8]<<"  "<<endl;
-cout<<"     |     |     "<<endl;
 
+int main() {
+    initialBoard();
+    printf("Welcome to Tic-Tac-Toe!\n");
 
-}
-void Player(char* Spaces, char player)
-{
-    int i;
-    cin >> i;
-    i--;
-    while (i >= 0 && i < 9)  
-    { 
-        if (Spaces[i] == ' ')
-        {
-            Spaces[i] = player;
+    while (1) {
+        printBoard();
+        Move();
+        
+        if (Win()) {
+            printBoard();
+            printf("Player %c wins!\n", Player);
             break;
         }
-        else
-        {
-            cout << "Invalid move! Try again: ";
-            cin >> i;
-            i--;
-        }
-    }
-}
-
-
-void Computer(char* Spaces,char computer)
-{   int i;
-    srand(time(0));
-    while(true)
-    {
-        i = rand() % 9;
-        if(Spaces[i] == ' ')
-        {
-            Spaces[i] = computer;
+        if (BoardFull()) {
+            printBoard();
+            printf("It's a draw!\n");
             break;
         }
-        }
-}
-bool Win(char* Spaces,char player,char Computer)
-{
-     if((Spaces[0] != ' ') && (Spaces[0] == Spaces[1]) && (Spaces[1] == Spaces[2])){
-        Spaces[0] == player ? cout << "YOU WIN!\n" : cout << "YOU LOSE!\n";
+        switchPlayer();
     }
-    else if((Spaces[3] != ' ') && (Spaces[3] == Spaces[4]) && (Spaces[4] == Spaces[5])){
-        Spaces[3] == player ? cout << "YOU WIN!\n" : cout << "YOU LOSE!\n";
-    }
-    else if((Spaces[6] != ' ') && (Spaces[6] == Spaces[7]) && (Spaces[7] == Spaces[8])){
-        Spaces[6] == player ? cout << "YOU WIN!\n" : cout << "YOU LOSE!\n";
-    }
-    else if((Spaces[0] != ' ') && (Spaces[0] == Spaces[3]) && (Spaces[3] == Spaces[6])){
-        Spaces[0] == player ? cout << "YOU WIN!\n" : cout << "YOU LOSE!\n";
-    }
-    else if((Spaces[1] != ' ') && (Spaces[1] == Spaces[4]) && (Spaces[4] == Spaces[7])){
-        Spaces[1] == player ? cout << "YOU WIN!\n" : cout << "YOU LOSE!\n";
-    }
-    else if((Spaces[2] != ' ') && (Spaces[2] == Spaces[5]) && (Spaces[5] == Spaces[8])){
-        Spaces[2] == player ? cout << "YOU WIN!\n" : cout << "YOU LOSE!\n";
-    }
-    else if((Spaces[0] != ' ') && (Spaces[0] == Spaces[4]) && (Spaces[4] == Spaces[8])){
-        Spaces[0] == player ? cout << "YOU WIN!\n" : cout << "YOU LOSE!\n";
-    }
-    else if((Spaces[2] != ' ') && (Spaces[2] == Spaces[4]) && (Spaces[4] == Spaces[6])){
-        Spaces[2] == player ? cout << "YOU WIN!\n" : cout << "YOU LOSE!\n";
-    }
-    else{
-        return false;
-    
-    }
-    return true;
-}
-bool Tie(char* Spaces)
-{
-    for(int i = 0; i < 9; i++)
-{
-        if(Spaces[i] == ' ')
-        {
-            return false;
-        }
-    }
-    cout << "IT'S A TIE!\n";
-    return true;
+   return 0;
 }
